@@ -1,0 +1,87 @@
+{% extends "recipes/base.html" %} {% block title %}Манай коктейлиуд{% endblock%} 
+{% block content %}
+<main class="container">
+  <hgroup>
+    <h1>Манай Коктейлиуд</h1>
+    <p>Хүссэн төрлөө сонгож жороо үзээрэй</p>
+  </hgroup>
+
+  <nav>
+    <ul>
+      <li><strong>Төрөл:</strong></li>
+    </ul>
+    <ul>
+      <li>
+        <a
+          href="{% url 'recipe_list' %}"
+          class="{% if not selected_category %}outline{% endif %}"
+          role="button"
+          >Бүгд</a
+        >
+      </li>
+      {% for cat in categories %}
+      <li>
+        <a
+          href="?category={{ cat.slug }}"
+          class="{% if selected_category == cat.slug %}outline{% else %}secondary outline{% endif %}"
+          role="button"
+        >
+          {{ cat.name }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <hr />
+
+  <div class="recipe-grid">
+    {% for recipe in recipes %}
+    <article>
+      <header>
+        <strong>{{ recipe.title }}</strong>
+      </header>
+
+      {% if recipe.image %}
+      <img
+        src="{{ recipe.image.url }}"
+        alt="{{ recipe.title }}"
+        style="
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+          border-radius: 8px;
+          margin-bottom: 15px;
+        "
+      />
+      {% endif %}
+
+      <p>
+        {% if recipe.category %}
+        <mark>{{ recipe.category.name }}</mark>
+        {% endif %}
+      </p>
+
+      <p>{{ recipe.instructions|truncatewords:10 }}</p>
+
+      <footer>
+        {% if recipe.slug %}
+        <a
+          href="{% url 'recipe_detail' recipe.slug %}"
+          role="button"
+          class="contrast"
+          >Дэлгэрэнгүй</a
+        >
+        {% else %}
+        <button disabled class="secondary">Slug байхгүй</button>
+        {% endif %}
+      </footer>
+    </article>
+    {% empty %}
+    <article>
+      <p>Уучлаарай, энэ төрөлд одоогоор жор нэмэгдээгүй байна.</p>
+    </article>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
